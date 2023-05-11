@@ -12,10 +12,19 @@ _Below instructions build Conda environment to get Ocean Parcels up and running.
    ```sh
    git clone https://github.com/rbucciarelli/ocean-parcels-dev.git
    ```
-3. Create conda environment
+3. Create conda environment and activate it
    ```sh
-   conda create -n parcels2 -c conda-forge parcels jupyter cartopy ffmpeg
+   conda create -n parcels_dev
+   conda install nb_conda_kernels
+   conda activate parcels_dev
    ```
+4. Install required libraries
+   ```sh
+   conda install -c conda-forge parcels jupyter matplotlib cartopy ffmpeg numpy xarray pandas
+   conda install -c conda-forge geojson requests simplekml
+   conda activate parcels_dev
+   ```
+
 
 ### Running example
 

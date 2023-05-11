@@ -12,7 +12,7 @@ def bounding_box(lats,lons,buff=0):
     min_lon = np.min(lons) - buff   
     max_lon = np.max(lons) + buff
     max_lat = np.max(lats) + buff
-    return {'lats':[min_lat,max_lat],'lons':[min_lon,max_lon]}
+    return {'lat':[min_lat,max_lat],'lon':[min_lon,max_lon]}
 
 ##- Read csv into dictionary
 def read_csv(input_csv):
