@@ -1,8 +1,13 @@
-##- run_parcels.py
-##exec(open("run_parcels.py").read())
+##-------------------------------------------------------------------------------------------
+##- NAME: run_parcels.py
+##- DESC: Advect input points in HYCOM surface current model forecast
+##-       Ensure there is 
+##- exec(open("run_parcels.py").read())
+##-------------------------------------------------------------------------------------------
 from parcels import FieldSet, ParticleSet, Variable, JITParticle, AdvectionRK4, plotTrajectoriesFile
 import numpy as np
 import math
+import xarray as xr
 ##- Custom functions
 from model_utils import *
 from geo_utils import *
@@ -17,7 +22,7 @@ fname_pts = './input/south-pacific-points.txt'
 fname_model = '/tmp/hycom_latest.nc'
 
 ##- Define output fname
-ofname = '/tmp/hycom_parcels_output.nc'
+ofname = '/tmp/hycom_parcels_output.zarr'
 
 ##- Read input points and create bounding region of interest (ROI)
 buf = 15.0										##- Buffer to extend ROI
@@ -25,8 +30,8 @@ P = read_csv(fname_pts)							##- Function found in geo_utils.py
 bbox = bounding_box(P['lat'],P['lon'],buf)		##- Function found in geo_utils.py
 
 ##- Particle coords
-plat = P['lat'][0]
-plon = P['lon'][0]
+plat = P['lat']
+plon = P['lon']
 
 ##- Get HYCOM model data from OPeNDAP server and subset to ROI - takes a while to run
 #dset = get_hycom_opendap(bbox['lon'][0],bbox['lon'][1],bbox['lat'][0],bbox['lat'][1])
@@ -44,19 +49,24 @@ if (not run_days):
 fieldset = FieldSet.from_xarray_dataset(dset,variables,dimensions)
 
 ##- Create Parcels ParticleSet
-pset = ParticleSet.from_list(fieldset=fieldset, pclass=JITParticle, lon=[plon], lat=[plat], time=start_dt)
+pset = ParticleSet.from_list(fieldset=fieldset, pclass=JITParticle, lon=plon, lat=plat, time=start_dt)
 
 ##- Advect the particles through fieldset time/space
-pset_info = {}
-output_file = pset.ParticleFile(name=ofname, outputdt=timedelta(hours=1),pset_info=pset_info)
+##- Will create a .zarr file in /tmp, need to convert this to netcdf
+output_file = pset.ParticleFile(name=ofname, outputdt=timedelta(hours=1))
 pset.execute(AdvectionRK4,
              runtime=timedelta(days=run_days),            					##- total length of run in days
              dt=timedelta(minutes=10),                                      ##- Timestep of kernel in min
              output_file=output_file)
+
 ##- Export results to netcdf
-output_file.export()
+nc_fname = ofname.replace('.zarr','.nc')
+zarr_to_nc(ofname,nc_fname)
+
 
 ##- Write to KML
-tt = parcels_to_kml(ofname,'./output/parcels_kml.kml')
+kml_fname = nc_fname.replace('.nc','.kml')
+tt = parcels_to_kml(nc_fname,kml_fname)
+print("Created KML file: "+kml_fname)
 
 

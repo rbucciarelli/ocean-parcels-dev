@@ -20,7 +20,8 @@ _Below instructions build Conda environment to get Ocean Parcels up and running.
    ```
 4. Install required libraries
    ```sh
-   conda install -c conda-forge parcels jupyter matplotlib cartopy ffmpeg numpy xarray pandas
+   conda install -c conda-forge parcels jupyter matplotlib cartopy
+   conda install -c conda-forge ffmpeg numpy xarray pandas
    conda install -c conda-forge geojson requests simplekml
    conda activate parcels_dev
    ```
@@ -37,15 +38,15 @@ _Below is a sample workflow to download HYCOM data and advect sample points thro
 2. Download subset of HYCOM model using region of interest (ROI) derived from input points. Will output to /tmp/hycom\_latest.nc
    ```sh
    ##- Run the following shell script
-   $ ./download_hycom.sh
+   $ ./download_hycom.sh				##- Latest forecast + 7 days
+   $ ./download_hycom.sh 2021-04-12		##- Hindcast start date + 7 days
    ```
 
-3. Advect particles through time using Parcels by running the script: run\_parcels.py
+3. Advect particles through time using Parcels by running python script (either from command line or notebook)
    ```sh
-   $ jupyter notebook
    $ python run_parcels.py
-
-
+   $ jupyter notebook
    ```
 
+3. View output point trajectories in kml or netcdf format
 

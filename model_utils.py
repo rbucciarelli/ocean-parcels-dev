@@ -2,6 +2,15 @@ import numpy as np
 from datetime import timedelta,datetime
 import xarray as xr
 
+##- Function to convert zarr file to netcdf
+def zarr_to_nc(fname_zarr,fname_nc):
+    try:
+        dset = xr.open_dataset(fname_zarr,engine='zarr')
+        dset.to_netcdf(fname_nc)
+        print("Created NetCDF file: "+fname_nc)
+    except:
+        print("model_utils.py: Could not convert zarr file: "+fname_zarr)
+
 ##- Function to compute total time duration in days from model
 def get_model_runtime(times):
      duration = times[-1] - times[0]

@@ -1,0 +1,11 @@
+jupyter
+parcels
+matplotlib
+cartopy
+ffmpeg
+numpy
+pandas
+xarray
+simplekml
+geojson
+requests

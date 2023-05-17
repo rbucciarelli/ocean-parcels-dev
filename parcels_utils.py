@@ -191,7 +191,7 @@ def parcels_to_kml(particle_nc,out_kml):
         D.append(data)
 
     ##- Call function to write kml for each trajectory
-    print("Creating KML: "+out_kml)
+    #print("Creating KML: "+out_kml)
     kml = write_kml(D) 
     kml.save(out_kml)
     return D 
